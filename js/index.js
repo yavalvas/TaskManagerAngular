@@ -1,10 +1,15 @@
 function TodoController ($scope) {
 	$scope.applicationTitle = "TODO task manager";
 	$scope.saved = localStorage.getItem('todos');
-	$scope.todos = (localStorage.getItem('todos')!==null) ? JSON.parse($scope.saved) : [ {text: 'Default task', taskId: 0, done: false}, 
-	                                                                                     {text: 'Additional default task', taskId: 1, done: false} ];
+	var defaultValues = [ {text: 'Default task', taskId: 0, done: false},
+						  {text: 'Additional default task', taskId: 1, done: false} ];
+	$scope.todos = (localStorage.getItem('todos')!==null) ? JSON.parse($scope.saved) : defaultValues;
 	localStorage.setItem('todos', JSON.stringify($scope.todos));
-
+	$scope.restoreState = function() {
+		console.log(localStorage);
+		localStorage.setItem('todos', JSON.stringify(defaultValues));
+		(localStorage.getItem('todos')!==null) ? JSON.parse($scope.saved) : defaultValues;
+	};
 	$scope.addTodo = function() {
 		$scope.todos.push({
 			text: $scope.todoText,
@@ -14,8 +19,8 @@ function TodoController ($scope) {
 					if(todo.taskId>lastIndex) {
 						lastIndex = todo.taskId;
 					}
-				})
-				lastIndex+=1
+				});
+				lastIndex+=1;
 				return lastIndex;
 			})(),
 			done: false
@@ -33,8 +38,13 @@ function TodoController ($scope) {
 		}
 	};
 
-	$scope.editTask = function(titleText, taskId) {
-		var newTaskTitle = prompt("Current title: "+titleText+". Insert new task title:");
+	$scope.editTask = function(taskId) {
+		//$scope.todos.find(function(todo){todo.taskId});
+		$scope.todos.forEach(function(todo) {
+			if(todo.taskId === taskId)
+				todo.makeShow = true;
+		});
+		/*var newTaskTitle = prompt("Current title: "+titleText+". Insert new task title:");
 		if(newTaskTitle){
 			var titleIndex = $scope.todos.map(
 					function(item) { 
@@ -44,15 +54,38 @@ function TodoController ($scope) {
 				console.log(titleIndex);
 				$scope.todos[titleIndex].text = newTaskTitle;
 			}
+		}*/
+	};
+
+	$scope.saveEdit = function(newTaskTitle, taskId) {
+		console.log(newTaskTitle);
+		if(newTaskTitle){
+			var titleIndex = $scope.todos.map(
+					function(item) {
+						return item.taskId;
+					}).indexOf(taskId);
+			if(titleIndex > -1) {
+				console.log(titleIndex);
+				$scope.todos[titleIndex].text = newTaskTitle;
+				$scope.todos[titleIndex].makeShow = false;
+			}
 		}
-	}
+	};
+
+	$scope.closeEdit = function (taskId) {
+		//$scope.todos.find(function(todo){todo.taskId});
+		$scope.todos.forEach(function(todo) {
+			if(todo.taskId === taskId)
+				todo.makeShow = false;
+		});
+	};
 	
 	$scope.remaining = function() {
 		var count = 0;
 		angular.forEach($scope.todos, function(todo){
 			count+= todo.done ? 0 : 1;
 		});
-		localStorage.setItem('todos', JSON.stringify($scope.todos))
+		localStorage.setItem('todos', JSON.stringify($scope.todos));
 		return count;
 	};
 

@@ -21,16 +21,22 @@
 				</section>
 		
 				<ul class="unstyled">
-					<label><input type="checkbox" ng-model="doSort" ng-true-value=true ng-false-value=false>
+					<label><input type="checkbox" data-ng-model="doSort" data-ng-true-value=true data-ng-false-value=false>
 						Select checkbox to sort/unselect to reverse
 					</label>
-					<input type="text" ng-model="filterTask" 
+					<input type="button" value="Restore start state" data-ng-click="restoreState()"/>
+					<input type="text" data-ng-model="filterTask"
 						class="form-control search header-elements-margin" placeholder="Write text to filter tasks">
 					<li data-ng-repeat="todo in todos | filter : filterTask | orderBy: {true: 'text', false:'-text'}[doSort] track by $index">
 						<input type="checkbox" data-ng-model="todo.done">
 						<span class="done-{{ todo.done }}">{{todo.taskId}}) {{ todo.text }}</span>
-						<a ng-click="editTask(todo.text, todo.taskId)"><i class="glyphicon glyphicon-edit"></i></a>
-						<a ng-click="deleteTask(todo.text, todo.taskId)" class="pull-right"><i class="glyphicon glyphicon-trash"></i></a>
+						<a data-ng-click="editTask(todo.taskId)"><i class="glyphicon glyphicon-edit"></i></a>
+						<form data-ng-if="todo.makeShow" style="display: inline-block">
+							<input type="text" data-ng-model="newTaskText"></input>
+							<input type="button" value="Сохранить" data-ng-click="saveEdit(newTaskText, todo.taskId)"></input>
+							<input type="button" value="Отменить" data-ng-click="closeEdit(todo.taskId)"></input>
+						</form>
+						<a data-ng-click="deleteTask(todo.text, todo.taskId)" class="pull-right"><i class="glyphicon glyphicon-trash"></i></a>
 					</li>
 				</ul>
 		
