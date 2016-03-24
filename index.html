@@ -1,51 +1,74 @@
 <!DOCTYPE html>
-<html >
-  <head>
+<html>
+<head>
     <meta charset="UTF-8">
     <title>TODO task manager</title>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/style.css">
     <script src='libs/angular.min.js'></script>
-  </head>
-  <body>
-    <body data-ng-app="">
-		<div class="container" data-ng-controller="TodoController">
-			<header class="app-header">
-				<h1 class="app-title">{{ applicationTitle }}</h1>
-			</header>
-	
-			<section class="app-body">
-				<section class="archive-control">
-					<span>{{ remaining() }} of {{ todos.length }} tasks remaining</span>
-					<p><a href="" data-ng-click="archive()">Delete selected tasks</a></p>
-				</section>
-		
-				<ul class="unstyled">
-					<label><input type="checkbox" data-ng-model="doSort" data-ng-true-value=true data-ng-false-value=false>
-						Select checkbox to sort/unselect to reverse
-					</label>
-					<input type="button" value="Restore start state" data-ng-click="restoreState()"/>
-					<input type="text" data-ng-model="filterTask"
-						class="form-control search header-elements-margin" placeholder="Write text to filter tasks">
-					<li data-ng-repeat="todo in todos | filter : filterTask | orderBy: {true: 'text', false:'-text'}[doSort] track by $index">
-						<input type="checkbox" data-ng-model="todo.done">
-						<span class="done-{{ todo.done }}">{{todo.taskId}}) {{ todo.text }}</span>
-						<a data-ng-click="editTask(todo.taskId)"><i class="glyphicon glyphicon-edit"></i></a>
-						<form data-ng-if="todo.makeShow" style="display: inline-block">
-							<input type="text" data-ng-model="newTaskText"></input>
-							<input type="button" value="Сохранить" data-ng-click="saveEdit(newTaskText, todo.taskId)"></input>
-							<input type="button" value="Отменить" data-ng-click="closeEdit(todo.taskId)"></input>
-						</form>
-						<a data-ng-click="deleteTask(todo.text, todo.taskId)" class="pull-right"><i class="glyphicon glyphicon-trash"></i></a>
-					</li>
-				</ul>
-		
-				<form data-ng-submit="addTodo()" class="todo-form">
-					<input type="text" data-ng-model="todoText" placeholder="Input task name" required="required" title="This field should not be left blank." /><br />
-					<input class="todo-form-btn" type="submit" value="Add Task" />
-				</form>
-			</section>
-		</div>
-        <script src="js/index.js"></script>
-  </body>
+</head>
+<body>
+<body data-ng-app="">
+<div class="container" data-ng-controller="TodoController">
+    <header class="app-header">
+        <h1 class="app-title">{{ applicationTitle }}</h1>
+    </header>
+
+    <section class="app-body">
+        <section class="archive-control">
+            <span>{{ remaining() }} of {{ todos.length }} tasks remaining</span>
+
+            <p><a href="" data-ng-click="archive()">Delete selected tasks</a></p>
+        </section>
+
+        <ul class="unstyled">
+            <label><input type="checkbox" data-ng-model="doSort" data-ng-true-value=true data-ng-false-value=false>
+                Select checkbox to sort/unselect to reverse
+            </label>
+            <input type="button" value="Restore start state" data-ng-click="restoreState()"/>
+            <input type="text" data-ng-model="filterTask"
+                   class="form-control search header-elements-margin" placeholder="Write text to filter tasks">
+            <li data-ng-repeat="todo in todos | filter : filterTask | orderBy: {true: 'text', false:'-text'}[doSort] track by $index">
+                <input type="checkbox" data-ng-model="todo.done">
+                <span class="done-{{ todo.done }}">{{todo.taskId}}) {{ todo.text }}</span>
+                <a data-ng-click="editTask(todo.taskId)"><i class="glyphicon glyphicon-edit"></i></a>
+
+                <form data-ng-if="todo.makeShow" style="display: inline-block">
+                    <input type="text" data-ng-model="newTaskText"></input>
+                    <input type="button" value="Сохранить" data-ng-click="saveEdit(newTaskText, todo.taskId)"></input>
+                    <input type="button" value="Отменить" data-ng-click="closeEdit(todo.taskId)"></input>
+                </form>
+                <a data-ng-click="deleteTask(todo.text, todo.taskId)" class="pull-right"><i
+                        class="glyphicon glyphicon-trash"></i></a>
+
+                <input id="btnShow"
+                    type="button"
+                    value="Display the Dialog"
+                    onclick="DlgShow('Удалить')"/>
+            </li>
+        </ul>
+
+        <form data-ng-submit="addTodo()" class="todo-form">
+            <input type="text" data-ng-model="todoText" placeholder="Input task name" required="required"
+                   title="This field should not be left blank."/><br/>
+            <input class="todo-form-btn" type="submit" value="Add Task"/>
+        </form>
+        <div id="Overlay">
+            <div>
+                <p id="DlgContent">Content Goes Here</p>
+                <input id="btnYes"
+                       type="button"
+                       value="Yes"
+                       onclick="DlgHide('Yes')"/>
+                <input id="btnNo"
+                       type="button"
+                       value="No"
+                       onclick="DlgHide('No')"/>
+            </div>
+        </div>
+    </section>
+</div>
+<script src="js/dialog.js"></script>
+<script src="js/index.js"></script>
+</body>
 </html>
